@@ -38,7 +38,7 @@ SELECT
 FROM 
 	country_club.Facilities
 WHERE 
-	country_club.membercost == 0.0
+	membercost == 0.0
 
 /* Q3: How can you produce a list of facilities that charge a fee to members,
 where the fee is less than 20% of the facility's monthly maintenance cost?
@@ -93,9 +93,9 @@ Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
 
-SELECT 
+SELECT DISTINCT
 	facility.name, 
-	CONCAT(member.firstname,'	',member.surname)
+	CONCAT(member.firstname,'	',member.surname) AS fullname
 FROM 
 	country_club.Bookings book
 LEFT OUTER JOIN 
@@ -108,7 +108,7 @@ ON
 WHERE 
 	facility.name LIKE '%tennis court%'
 ORDER BY 
-	member.surname
+	member.surname, member.firstname
 
 /* Q8: How can you produce a list of bookings on the day of 2012-09-14 which
 will cost the member (or guest) more than $30? Remember that guests have
@@ -119,7 +119,7 @@ Order by descending cost, and do not use any subqueries. */
 
 SELECT 
 	facility.name, 
-	CONCAT(member.firstname, ' 	',member.surname),
+	CONCAT(member.firstname, ' 	',member.surname) AS fullname,
 	(CASE WHEN member.surname = 'GUEST' THEN facility.guestcost*book.slots ELSE facility.membercost*book.slots END) AS cost
 FROM 
 	country_club.Bookings book
@@ -183,4 +183,6 @@ GROUP BY
 
 ) AS s3 
 WHERE 
-	s3.revenue < 1000		
+	s3.revenue < 1000
+ORDER BY
+	s3.revenue	
